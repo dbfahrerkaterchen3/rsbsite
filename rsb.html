@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>RSB | Rhein-Sieg-Bahn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #0b1020;
+      color: #fff;
+    }
+
+    /* Navigation */
+    .navbar {
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      padding: 12px 20px;
+      display: flex;
+      gap: 20px;
+      border-bottom: 1px solid rgba(5, 255, 5, 0.73);
+      z-index: 1000;
+    }
+    .navbar span {
+      color: #3aa6ff;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+    .navbar span:hover {
+      background: rgba(58,166,255,0.2);
+    }
+    .navbar .active {
+      background: rgba(58,166,255,0.25);
+    }
+
+    /* Sektionen */
+    section {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    .departure {
+      background: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .line {
+      font-weight: bold;
+      color: #3aa6ff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+<!--    <span onclick="showSection('abfahrten')">Abfahrten</span>  -->
+  <a href="?page=home" data-tab="home" class="active">Startseite</a>
+  <a href="?page=timetable" data-tab="timetable">Timetable</a>
+  <a href="?page=abfahrten" data-tab="abfahrten">Abfahrten</a>
+  <a href="?page=fahrzeugflotte" data-tab="fahrzeugflotte">Fahrzeugflotte</a>
+</nav>
+
+  <!-- Startseite -->
+  <section id="home" class="section">
+    <div class="panel">
+      <h1>Willkommen bei der RSB!</h1>
+      <p>
+        Hier findest du alle Informationen rund um die Rhein-Sieg-Bahn.  
+        Wähle oben <strong>„Abfahrten“</strong>, um die nächsten Verbindungen deiner Haltestelle zu sehen.
+      </p>
+    </div>
+  </section>
+
+  <!-- Abfahrten -->
+  <section id="abfahrten" class="section" style="display:none;">
+    <div class="panel">
+      <h1>Abfahrten an einer Haltestelle</h1>
+
+      <label for="stopSelect" class="label">Haltestelle auswählen:</label>
+      <select id="stopSelect"></select>
+
+      <div id="departures" class="departures-list">
+        
+      </div>
+    </div>
+  </section>
+
+<!-- Timetable -->
+      <section id="timetable" class="section" style="display:none">
+        <div class="container">
+            <h1>RSB Aushangfahrplan</h1>
+            <label for="stationSelect">Station wählen:</label>
+            <select id="stationSelect"></select>
+            <div id="fahrplanContainer"></div>
+          </div>
+        <script src="script.js"></script>
+      </section>
+
+
+  <section id="fahrzeugflotte" class="section" style="display:none">
+    <h1>Comming Soon</h1>
+  </section>
+  <script>
+function openPage() {
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get("page") || "home";
+
+  // Sections umschalten
+  document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
+  const activeSection = document.getElementById(page);
+  if (activeSection) activeSection.style.display = "block";
+
+  // Navigation aktiv setzen
+  document.querySelectorAll(".navbar a").forEach(a => a.classList.remove("active"));
+  const activeLink = document.querySelector(`.navbar a[data-tab="${page}"]`);
+  if (activeLink) activeLink.classList.add("active");
+}
+
+window.addEventListener("load", openPage);
+</script>
+
+  
+  <script>
+    // Demo-Fahrplandaten
+    const timetable = [
+      { stop: "Hangelar Ost", time: "05:30", line: "606", direction: "Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "06:00", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "06:02", line: "529", direction: "Ramersdorf [U] (Rufbus)" },
+      { stop: "Hangelar Ost", time: "06:05", line: "E", direction: "Pützchen" },
+      { stop: "Hangelar Ost", time: "06:15", line: "529", direction: "Sankt Augustin Zentrum [U]" },
+      { stop: "Hangelar Ost", time: "06:20", line: "529", direction: "Niederpleis Campus" },
+      { stop: "Hangelar Ost", time: "06:30", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "06:45", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "07:02", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "07:12", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "07:22", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "07:30", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+
+      { stop: "Hangelar Ost", time: "12:03", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "12:11", line: "529", direction: "St. Augustin Zentrum/ Hochschule Bonn-Rhein-Sieg" },
+      { stop: "Hangelar Ost", time: "12:13", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "12:19", line: "529", direction: "Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "12:21", line: "BE67", direction: "Bonn Hauptbahnhof (S)[U]" },
+      { stop: "Hangelar Ost", time: "12:22", line: "753", direction: "Hürth-Kalscheuren Bf" },
+      { stop: "Hangelar Ost", time: "12:23", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "12:33", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "12:41", line: "529", direction: "Ramersdorf [U]" },
+
+      { stop: "Hangelar Ost", time: "14:23", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:25", line: "BE66", direction: "Bahnersatzverkehr Linie 66" },
+      { stop: "Hangelar Ost", time: "14:33", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:35", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "14:35", line: "BE66", direction: "Bahnersatzverkehr Linie 66" },
+      { stop: "Hangelar Ost", time: "14:43", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:45", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "14:51", line: "529", direction: "St. Augustin Zentrum" },
+      { stop: "Hangelar Ost", time: "14:53", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:55", line: "BE66", direction: "BE Linie 66" },
+
+      { stop: "Hangelar Ost", time: "15:03", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "15:05", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "15:05", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "15:13", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "15:15", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "15:21", line: "529", direction: "St. Augustin Zentrum" },
+      { stop: "Hangelar Ost", time: "15:23", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "15:25", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "15:33", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "15:35", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "15:35", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "15:43", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "15:45", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "15:51", line: "529", direction: "St. Augustin Zentrum" },
+      { stop: "Hangelar Ost", time: "15:53", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "15:55", line: "BE66", direction: "BE Linie 66" },
+
+      { stop: "Hangelar Ost", time: "16:03", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "16:05", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "16:05", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "16:13", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "16:15", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "16:21", line: "529", direction: "St. Augustin Zentrum" },
+
+      { stop: "Hangelar Ost", time: "17:23", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "17:25", line: "BE66", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "17:33", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "17:35", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "17:35", line: "BE66", direction: "Bahnersatzverkehr Linie 66" },
+      { stop: "Hangelar Ost", time: "17:43", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "17:45", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "17:51", line: "529", direction: "St. Augustin Zentrum" },
+      { stop: "Hangelar Ost", time: "17:53", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "17:55", line: "BE", direction: "BE Linie 66" },
+
+      { stop: "Hangelar Ost", time: "18:03", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "18:05", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "18:05", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "18:13", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "18:15", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "18:21", line: "529", direction: "St. Augustin Zentrum" },
+      { stop: "Hangelar Ost", time: "18:23", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "18:25", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "18:33", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "18:35", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "18:35", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "18:43", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "18:45", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "18:51", line: "529", direction: "St. Augustin Zentrum" },
+      { stop: "Hangelar Ost", time: "18:53", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "18:55", line: "BE", direction: "BE Linie 66" },
+
+      { stop: "Hangelar Ost", time: "19:03", line: "606", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "19:05", line: "529", direction: "Bonn-Ramersdorf [U]" },
+      { stop: "Hangelar Ost", time: "19:05", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "19:13", line: "607", direction: "Ramersdorf ü. Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "19:15", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "19:21", line: "529", direction: "St. Augustin Zentrum" },
+
+      { stop: "Hangelar Ost", time: "14:23", line: "607", direction: "Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:25", line: "BE", direction: "BE Li. 66 (→HBF" },
+      { stop: "Hangelar Ost", time: "14:33", line: "606", direction: "Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:35", line: "529", direction: "Bonn HBF (S) [U]" },
+      { stop: "Hangelar Ost", time: "14:35", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "14:43", line: "607", direction: "Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:45", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "14:51", line: "529", direction: "St. Augustin Zentrum" },
+      { stop: "Hangelar Ost", time: "14:53", line: "607", direction: "Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "14:55", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "15:03", line: "606", direction: "Hauptbahnhof (S) [U]" },
+      { stop: "Hangelar Ost", time: "15:05", line: "529", direction: "Bonn HBF (S)[U]" },
+      { stop: "Hangelar Ost", time: "15:05", line: "BE", direction: "BE Linie 66" },
+      { stop: "Hangelar Ost", time: "15:13", line: "607", direction: "Hauptbahnhof" },
+      { stop: "Hangelar Ost", time: "15:15", line: "BE", direction: "BE Linie 66" },
+
+      // BF Köln Süd Sonderfahrten
+      { stop: "Köln Süd (S)", time: "10:15", line: "S30", direction: "Hürth-Kalscheuren" },
+      { stop: "Köln Süd (S)", time: "09:15", line: "S30", direction: "Hürth-Kalscheuren" },
+      // SDZ
+      { stop: "Sonderzugfahrten", time: "10:15", line: "SDZ 1032", direction: "Köln Süd -> Köln Messe/Deutz" },
+      { stop: "Sonderzugfahrten", time: "10:14", line: "SDZ 1232", direction: "Bonn Hbf -> Köln Hbf" },
+
+      // Boppard Hbf IC
+      { stop: "Boppard Hbf", time: "05:33", line: "IC 11011", direction: "Köln Messe/Deutz ü. Remagen" },
+      { stop: "Boppard Hbf", time: "06:33", line: "IC 11013", direction: "Köln Messe/Deutz ü. Walporzheim" },
+      { stop: "Boppard Hbf", time: "07:03", line: "IC 12001", direction: "Köln Messe/Deutz ü. Remagen" },
+      { stop: "Boppard Hbf", time: "05:33", line: "IC 11011", direction: "Köln Messe/Deutz ü. Walporzheim" },
+    ];
+
+
+    // Haltestellen extrahieren
+    const stops = [...new Set(timetable.map(t => t.stop))].sort();
+
+    const stopSelect = document.getElementById("stopSelect");
+    const departuresDiv = document.getElementById("departures");
+
+    // Dropdown füllen
+    stops.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      stopSelect.appendChild(opt);
+    });
+
+    // Abfahrten anzeigen
+    function showDepartures(stop) {
+      departuresDiv.innerHTML = "";
+
+      const list = timetable
+        .filter(t => t.stop === stop)
+        .sort((a, b) => a.time.localeCompare(b.time));
+
+      if (list.length === 0) {
+        departuresDiv.innerHTML = "<p>Keine Abfahrten gefunden.</p>";
+        return;
+      }
+
+      list.forEach(t => {
+        const div = document.createElement("div");
+        div.className = "departure";
+        div.innerHTML = `
+          <span class="line">${t.line}</span>
+          <span>${t.direction}</span>
+          <span>${t.time}</span>
+        `;
+        departuresDiv.appendChild(div);
+      });
+    }
+
+    // Beim Laden: erste Haltestelle anzeigen
+    showDepartures(stops[0]);
+
+    // Bei Auswahl ändern
+    stopSelect.addEventListener("change", () => {
+      showDepartures(stopSelect.value);
+    });
+  </script>
+  <script>
+// --- DEIN TAB SYSTEM (Beispiel) ---
+function openTab(tabName) {
+    document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
+    document.getElementById(tabName).style.display = "block";
+
+    if (tabName === "timetable") {
+        initFahrplan();
+    }
+}
+
+// --- FAHRPLAN MODUL ---
+let fahrplanGeladen = false;
+let fahrplaene = {};
+
+async function initFahrplan() {
+    if (fahrplanGeladen) return;
+
+    // JSON laden
+    const response = await fetch("data/fahrplaene.json");
+    fahrplaene = await response.json();
+
+    const select = document.getElementById("stationSelect");
+
+    // Dropdown füllen
+    Object.keys(fahrplaene).forEach(station => {
+        const opt = document.createElement("option");
+        opt.value = station;
+        opt.textContent = station;
+        select.appendChild(opt);
+    });
+
+    select.addEventListener("change", () => {
+        renderFahrplan(select.value);
+    });
+
+    renderFahrplan(select.value);
+    fahrplanGeladen = true;
+}
+
+function renderFahrplan(station) {
+    const container = document.getElementById("fahrplanContainer");
+    const daten = fahrplaene[station];
+
+    let html = `
+        <div style="background:#fff200;padding:20px;border:2px solid black;">
+            <h2>Abfahrt – ${station}</h2>
+            <table style="width:100%;border-collapse:collapse;font-size:18px;">
+                <tr>
+                    <th style="border-bottom:1px solid black;">Zeit</th>
+                    <th style="border-bottom:1px solid black;">Zug</th>
+                    <th style="border-bottom:1px solid black;">Ziel</th>
+                    <th style="border-bottom:1px solid black;">Gleis</th>
+                </tr>
+    `;
+
+    daten.forEach(e => {
+        html += `
+            <tr>
+                <td style="border-bottom:1px solid black;">${e.time}</td>
+                <td style="border-bottom:1px solid black;">${e.train}</td>
+                <td style="border-bottom:1px solid black;">${e.destination}</td>
+                <td style="border-bottom:1px solid black;">${e.platform}</td>
+            </tr>
+        `;
+    });
+
+    html += "</table></div>";
+    container.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
