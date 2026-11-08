@@ -19,5 +19,12 @@
         "klasse": "1. Klasse",
         "strecke": "Bonn Hbf -> Köln Hbf",
         "expires_at": "2026-11-08T15:06:33.310425Z"
+    },
+    "RSB-154335": {
+        "roblox_user": "Eliyas986",
+        "zugtyp": "IC",
+        "klasse": "1. Klasse",
+        "strecke": "Bonn -> Köln",
+        "expires_at": "2026-11-08T17:12:15.359462Z"
     }
 }
