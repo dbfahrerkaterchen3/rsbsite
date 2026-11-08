@@ -26,5 +26,12 @@
         "klasse": "1. Klasse",
         "strecke": "Bonn -> Köln",
         "expires_at": "2026-11-08T17:12:15.359462Z"
+    },
+    "RSB-157842": {
+        "roblox_user": "Zugfan_KVB",
+        "zugtyp": "S1",
+        "klasse": "1. Klasse",
+        "strecke": "Bonn Hbf - Köln Süd",
+        "expires_at": "2026-11-08T18:10:42.535287Z"
     }
 }
