@@ -33,5 +33,12 @@
         "klasse": "1. Klasse",
         "strecke": "Bonn Hbf - Köln Süd",
         "expires_at": "2026-11-08T18:10:42.535287Z"
+    },
+    "RSB-213400": {
+        "roblox_user": "Nuss3482",
+        "zugtyp": "RE12",
+        "klasse": "1. Klasse",
+        "strecke": "Gratzburg Hafen -> Malzbrücke",
+        "expires_at": "2026-11-09T09:36:40.155272Z"
     }
 }
