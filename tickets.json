@@ -40,5 +40,12 @@
         "klasse": "1. Klasse",
         "strecke": "Gratzburg Hafen -> Malzbrücke",
         "expires_at": "2026-11-09T09:36:40.155272Z"
+    },
+    "RSB-238026": {
+        "roblox_user": "Eliyas986",
+        "zugtyp": "IC",
+        "klasse": "1. Klasse",
+        "strecke": "Bonn -> Köln",
+        "expires_at": "2026-11-09T16:27:06.873824Z"
     }
 }
