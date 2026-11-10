@@ -47,5 +47,12 @@
         "klasse": "1. Klasse",
         "strecke": "Bonn -> Köln",
         "expires_at": "2026-11-09T16:27:06.873824Z"
+    },
+    "RSB-332189": {
+        "roblox_user": "Eliyas986",
+        "zugtyp": "IC",
+        "klasse": "1. Klasse",
+        "strecke": "Bonn -> Köln",
+        "expires_at": "2026-11-10T18:36:29.999532Z"
     }
 }
