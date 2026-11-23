@@ -1,0 +1,37 @@
+{
+  "zugdaten": {
+    "21201": {
+      "linie": "RE12",
+      "von": "Gratzburg Hbf",
+      "nach": "Rübelheim Hbf",
+      "abfahrt": "14:00",
+      "ankunft": "14:45",
+      "gleis": "3",
+      "hinweis": "Planmäßig"
+    }
+  },
+  "kommunikation": [
+    {
+      "id": "INFO-1",
+      "titel": "Platzhalter",
+      "text": "Platzhalter",
+      "zeit": "13:45"
+    }
+  ],
+  "funk": [
+    {
+      "sender": "RiS",
+      "nachricht": "System aktiv",
+      "zeit": "13:58"
+    }
+  ],
+  "101": {
+    "bezeichnung": "Test",
+    "zeit": "14:00",
+    "zugnummern": "99997, 99998, 99999",
+    "start_ziel": "Test A ↔ Test B",
+    "fahrzeug": "",
+    "hinweis": "Platzhalter"
+  }
+  }
+}
