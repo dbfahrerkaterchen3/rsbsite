@@ -12,26 +12,27 @@
   },
   "kommunikation": [
     {
-      "id": "INFO-1",
-      "titel": "Platzhalter",
-      "text": "Platzhalter",
-      "zeit": "13:45"
+      "id": "INFO-1001",
+      "titel": "Betriebsaufnahme RSBRiS",
+      "text": "Leitstelle und Funk aktiv.",
+      "zeit": "System"
     }
   ],
   "funk": [
     {
-      "sender": "RiS",
-      "nachricht": "System aktiv",
-      "zeit": "13:58"
+      "sender": "Dispo RSB",
+      "nachricht": "Betriebsfunk bereit.",
+      "zeit": "System"
     }
   ],
-  "101": {
-    "bezeichnung": "Test",
-    "zeit": "14:00",
-    "zugnummern": "99997, 99998, 99999",
-    "start_ziel": "Test A ↔ Test B",
-    "fahrzeug": "",
-    "hinweis": "Platzhalter"
-  }
+  "schichtplan": {
+    "101": {
+      "bezeichnung": "Frühschicht RE12",
+      "zeit": "14:00 - 16:00 Uhr",
+      "zugnummern": "21201, 21202",
+      "start_ziel": "Gratzburg Hbf <-> Rübelheim Hbf",
+      "fahrzeug": "BR 146.2",
+      "hinweis": "Planmäßig"
+    }
   }
 }
